@@ -100,9 +100,23 @@
 
             switch (currentStep) {
                 case 1: // After starting, waiting for further commands
-                    if (input.toLowerCase() === 'open door' || input.toLowerCase() === 'look around') {
+                    if (input.toLowerCase() === 'open door') {
                         clearText(userInput);
-                        displayOutcome(input.toLowerCase());
+                        displayOptions('open door');
+                    } else {
+                        printMessage("Invalid command. Please select a valid option.");
+                    }
+                    break;
+                case 2: // After 'open door', handle nested options
+                    if (input.toLowerCase() === 'run away') {
+                        clearText(userInput);
+                        displayOutcome('run away');
+                    } else if (input.toLowerCase() === 'look around') {
+                        clearText(userInput);
+                        displayOutcome('look around');
+                    } else if (input.toLowerCase() === 'close door') {
+                        clearText(userInput);
+                        displayOutcome('close door');
                     } else {
                         printMessage("Invalid command. Please select a valid option.");
                     }
@@ -123,16 +137,30 @@
             element.textContent = '';
         }
 
+        function displayOptions(outcome) {
+            switch (outcome) {
+                case 'open door':
+                    printMessage("You opened the door. What would you like to do next?");
+                    printMessage("1. Run away");
+                    printMessage("2. Look around");
+                    printMessage("3. Close door");
+                    currentStep++;
+                    break;
+                default:
+                    printMessage("Unexpected error occurred. Please refresh the page and try again.");
+            }
+        }
+
         function displayOutcome(outcome) {
             switch (outcome) {
-                case 'start':
-                    printMessage("You're in a dark room. There's a door in front of you.");
-                    break;
-                case 'open door':
-                    printMessage("You open the door and step into a bright hallway.");
+                case 'run away':
+                    printMessage("You ran away from the door.");
                     break;
                 case 'look around':
-                    printMessage("You see a table with a key on it.");
+                    printMessage("You looked around the room.");
+                    break;
+                case 'close door':
+                    printMessage("You closed the door.");
                     break;
                 default:
                     printMessage("Unexpected error occurred. Please refresh the page and try again.");
