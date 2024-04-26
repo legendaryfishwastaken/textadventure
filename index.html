@@ -14,7 +14,6 @@
         }
 
         .terminal {
-            border: 2px solid #00FF00;
             padding: 10px;
             width: 100%;
             height: 100%;
@@ -27,8 +26,6 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
 
         input {
@@ -49,19 +46,25 @@
             from, to { border-color: transparent; }
             50% { border-color: white; }
         }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 <body>
     <div class="terminal" id="terminal">
         <div class="terminal-content" id="terminalContent">
             <pre id="asciiArt">
- _______ _    _ ______    _____          __  __ ______ 
-|__   __| |  | |  ____|  / ____|   /\   |  \/  |  ____|
-   | |  | |__| | |__    | |  __   /  \  | \  / | |__   
-   | |  |  __  |  __|   | | |_ | / /\ \ | |\/| |  __|  
-   | |  | |  | | |____  | |__| |/ ____ \| |  | | |____ 
-   |_|  |_|  |_|______|  \_____/_/    \_\_|  |_|______|
-                                                      
+  _______ _    _ ______    _____          __  __ ______ 
+ |__   __| |  | |  ____|  / ____|   /\   |  \/  |  ____|
+    | |  | |__| | |__    | |  __   /  \  | \  / | |__   
+    | |  |  __  |  __|   | | |_ | / /\ \ | |\/| |  __|  
+    | |  | |  | | |____  | |__| |/ ____ \| |  | | |____ 
+    |_|  |_|  |_|______|  \_____/_/    \_\_|  |_|______|
+                                                       
             </pre>
             <div id="welcomeText">Press Enter to Start</div>
         </div>
@@ -69,10 +72,8 @@
     </div>
 
     <script>
-        const terminal = document.getElementById('terminal');
         const terminalContent = document.getElementById('terminalContent');
         const userInput = document.getElementById('userInput');
-        const asciiArt = document.getElementById('asciiArt');
         const welcomeText = document.getElementById('welcomeText');
 
         let typingEffect;
@@ -83,7 +84,7 @@
                 if (currentStep === 0) {
                     clearText(welcomeText);
                     clearText(userInput);
-                    displayOptions('start');
+                    displayOutcome('start');
                     currentStep++;
                 } else {
                     processInput(userInput.value.trim());
@@ -98,20 +99,9 @@
             terminalContent.appendChild(output);
 
             switch (currentStep) {
-                case 1: // Waiting for the user to start
-                    if (input.toLowerCase() === 'start') {
-                        clearText(userInput);
-                        clearText(terminalContent);
-                        displayOutcome('start');
-                        currentStep++;
-                    } else {
-                        printMessage("Please press Enter to start.");
-                    }
-                    break;
-                case 2: // After starting, waiting for further commands
+                case 1: // After starting, waiting for further commands
                     if (input.toLowerCase() === 'open door' || input.toLowerCase() === 'look around') {
                         clearText(userInput);
-                        clearText(terminalContent);
                         displayOutcome(input.toLowerCase());
                     } else {
                         printMessage("Invalid command. Please select a valid option.");
@@ -123,7 +113,7 @@
         }
 
         function printMessage(message) {
-            const output = document.createElement('div');
+            const output = document.createElement('pre');
             output.textContent = message;
             terminalContent.appendChild(output);
             output.scrollIntoView(false);
@@ -131,16 +121,6 @@
 
         function clearText(element) {
             element.textContent = '';
-        }
-
-        function displayOptions(outcome) {
-            switch (outcome) {
-                case 'start':
-                    welcomeText.textContent = "Press Enter to Start";
-                    break;
-                default:
-                    printMessage("Unexpected error occurred. Please refresh the page and try again.");
-            }
         }
 
         function displayOutcome(outcome) {
