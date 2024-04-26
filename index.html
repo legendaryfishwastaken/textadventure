@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Game</title>
+    <title>Text Adventure</title>
     <style>
         body {
             background-color: black;
@@ -28,25 +28,6 @@
             flex-direction: column;
         }
 
-        input {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: inherit;
-            outline: none;
-        }
-
-        .typing::after {
-            content: '|';
-            animation: blink-caret 0.75s infinite alternate;
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: white; }
-        }
-
         pre {
             margin: 0;
             white-space: pre-wrap;
@@ -68,61 +49,48 @@
             </pre>
             <div id="welcomeText">Press Enter to Start</div>
         </div>
-        <input type="text" id="userInput" class="typing" autocomplete="off">
     </div>
 
     <script>
         const terminalContent = document.getElementById('terminalContent');
-        const userInput = document.getElementById('userInput');
         const welcomeText = document.getElementById('welcomeText');
 
-        let typingEffect;
         let currentStep = 0;
 
-        userInput.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 if (currentStep === 0) {
                     clearText(welcomeText);
-                    clearText(userInput);
-                    displayOutcome('start');
+                    displayOptions('open door');
                     currentStep++;
-                } else {
-                    processInput(userInput.value.trim());
-                    userInput.value = '';
+                }
+            } else if (event.key >= '1' && event.key <= '3' && currentStep === 1) {
+                const optionIndex = parseInt(event.key) - 1;
+                if (optionIndex >= 0 && optionIndex <= 2) {
+                    processInput(optionIndex);
                 }
             }
         });
 
-        function processInput(input) {
-            const output = document.createElement('div');
-            output.textContent = '> ' + input;
-            terminalContent.appendChild(output);
-
-            switch (currentStep) {
-                case 1: // After starting, waiting for further commands
-                    if (input.toLowerCase() === 'open door') {
-                        clearText(userInput);
-                        displayOptions('open door');
-                    } else {
-                        printMessage("Invalid command. Please select a valid option.");
-                    }
+        function processInput(optionIndex) {
+            switch (optionIndex) {
+                case 0:
+                    clearText(terminalContent);
+                    displayOutcome('run away');
+                    currentStep++;
                     break;
-                case 2: // After 'open door', handle nested options
-                    if (input.toLowerCase() === 'run away') {
-                        clearText(userInput);
-                        displayOutcome('run away');
-                    } else if (input.toLowerCase() === 'look around') {
-                        clearText(userInput);
-                        displayOutcome('look around');
-                    } else if (input.toLowerCase() === 'close door') {
-                        clearText(userInput);
-                        displayOutcome('close door');
-                    } else {
-                        printMessage("Invalid command. Please select a valid option.");
-                    }
+                case 1:
+                    clearText(terminalContent);
+                    displayOutcome('look around');
+                    currentStep++;
+                    break;
+                case 2:
+                    clearText(terminalContent);
+                    displayOutcome('close door');
+                    currentStep++;
                     break;
                 default:
-                    printMessage("Unexpected error occurred. Please refresh the page and try again.");
+                    printMessage("Invalid option.");
             }
         }
 
@@ -144,7 +112,6 @@
                     printMessage("1. Run away");
                     printMessage("2. Look around");
                     printMessage("3. Close door");
-                    currentStep++;
                     break;
                 default:
                     printMessage("Unexpected error occurred. Please refresh the page and try again.");
