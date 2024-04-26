@@ -63,10 +63,9 @@
    |_|  |_|  |_|______|  \_____/_/    \_\_|  |_|______|
                                                       
             </pre>
-            <div id="welcomeText">Welcome to The Game!</div>
+            <div id="welcomeText">Press Enter to Start</div>
         </div>
-        <div id="options">Options:</div>
-        <input type="text" id="userInput" class="typing" autocomplete="off" autofocus>
+        <input type="text" id="userInput" class="typing" autocomplete="off">
     </div>
 
     <script>
@@ -75,30 +74,20 @@
         const userInput = document.getElementById('userInput');
         const asciiArt = document.getElementById('asciiArt');
         const welcomeText = document.getElementById('welcomeText');
-        const options = document.getElementById('options');
 
-        let currentCommandIndex = 0;
-
-        const commands = [
-            { command: 'start', description: "Start the game" },
-            { command: 'open door', description: "Open the door" },
-            { command: 'look around', description: "Look around the room" },
-            { command: 'take key', description: "Take the key" },
-            { command: 'use key', description: "Use the key" },
-            { command: 'exit', description: "Exit the game" }
-        ];
-
-        displayWelcomeText();
-        displayOptions();
+        let typingEffect;
+        let currentStep = 0;
 
         userInput.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                processInput(userInput.value.trim());
-                userInput.value = '';
-            } else if (event.key >= '1' && event.key <= '6') {
-                const optionIndex = parseInt(event.key) - 1;
-                if (optionIndex < commands.length) {
-                    processInput(commands[optionIndex].command);
+                if (currentStep === 0) {
+                    clearText(welcomeText);
+                    clearText(userInput);
+                    displayOptions('start');
+                    currentStep++;
+                } else {
+                    processInput(userInput.value.trim());
+                    userInput.value = '';
                 }
             }
         });
@@ -108,27 +97,28 @@
             output.textContent = '> ' + input;
             terminalContent.appendChild(output);
 
-            switch (input.toLowerCase()) {
-                case 'start':
-                    printMessage("You're in a dark room. There's a door in front of you.");
+            switch (currentStep) {
+                case 1: // Waiting for the user to start
+                    if (input.toLowerCase() === 'start') {
+                        clearText(userInput);
+                        clearText(terminalContent);
+                        displayOutcome('start');
+                        currentStep++;
+                    } else {
+                        printMessage("Please press Enter to start.");
+                    }
                     break;
-                case 'open door':
-                    printMessage("You open the door and step into a bright hallway.");
-                    break;
-                case 'look around':
-                    printMessage("You see a table with a key on it.");
-                    break;
-                case 'take key':
-                    printMessage("You take the key.");
-                    break;
-                case 'use key':
-                    printMessage("You use the key to unlock the door.");
-                    break;
-                case 'exit':
-                    printMessage("Thanks for playing!");
+                case 2: // After starting, waiting for further commands
+                    if (input.toLowerCase() === 'open door' || input.toLowerCase() === 'look around') {
+                        clearText(userInput);
+                        clearText(terminalContent);
+                        displayOutcome(input.toLowerCase());
+                    } else {
+                        printMessage("Invalid command. Please select a valid option.");
+                    }
                     break;
                 default:
-                    printMessage("Command not recognized. Type 'help' for a list of commands.");
+                    printMessage("Unexpected error occurred. Please refresh the page and try again.");
             }
         }
 
@@ -139,20 +129,33 @@
             output.scrollIntoView(false);
         }
 
-        function displayWelcomeText() {
-            const welcomeMessage = "Welcome to The Game!";
-            let index = 0;
-            const interval = setInterval(function() {
-                welcomeText.textContent += welcomeMessage[index++];
-                if (index === welcomeMessage.length) clearInterval(interval);
-            }, 50);
+        function clearText(element) {
+            element.textContent = '';
         }
 
-        function displayOptions() {
-            for (let i = 0; i < commands.length; i++) {
-                const option = document.createElement('div');
-                option.textContent = (i + 1) + '. ' + commands[i].command + ': ' + commands[i].description;
-                options.appendChild(option);
+        function displayOptions(outcome) {
+            switch (outcome) {
+                case 'start':
+                    welcomeText.textContent = "Press Enter to Start";
+                    break;
+                default:
+                    printMessage("Unexpected error occurred. Please refresh the page and try again.");
+            }
+        }
+
+        function displayOutcome(outcome) {
+            switch (outcome) {
+                case 'start':
+                    printMessage("You're in a dark room. There's a door in front of you.");
+                    break;
+                case 'open door':
+                    printMessage("You open the door and step into a bright hallway.");
+                    break;
+                case 'look around':
+                    printMessage("You see a table with a key on it.");
+                    break;
+                default:
+                    printMessage("Unexpected error occurred. Please refresh the page and try again.");
             }
         }
     </script>
