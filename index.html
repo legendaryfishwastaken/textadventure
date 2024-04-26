@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Game</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .terminal {
+            border: 2px solid #00FF00;
+            padding: 10px;
+            width: 80%;
+            margin: 0 auto;
+            overflow-y: auto;
+            height: 400px;
+        }
+
+        input {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: inherit;
+            width: calc(100% - 20px);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <pre>
+  _______ _    _ ______    _____          __  __ ______ 
+ |__   __| |  | |  ____|  / ____|   /\   |  \/  |  ____|
+    | |  | |__| | |__    | |  __   /  \  | \  / | |__   
+    | |  |  __  |  __|   | | |_ | / /\ \ | |\/| |  __|  
+    | |  | |  | | |____  | |__| |/ ____ \| |  | | |____ 
+    |_|  |_|  |_|______|  \_____/_/    \_\_|  |_|______|
+                                                        
+    </pre>
+    <div class="terminal" id="terminal">
+        <div>Welcome to The Game!</div>
+        <div>Type 'start' to begin.</div>
+        <input type="text" id="userInput" autocomplete="off">
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const userInput = document.getElementById('userInput');
+
+        userInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                processInput(userInput.value.trim());
+                userInput.value = '';
+            }
+        });
+
+        function processInput(input) {
+            const output = document.createElement('div');
+            output.textContent = '> ' + input;
+            terminal.appendChild(output);
+
+            switch (input.toLowerCase()) {
+                case 'start':
+                    printMessage("You're in a dark room. There's a door in front of you.");
+                    break;
+                case 'open door':
+                    printMessage("You open the door and step into a bright hallway.");
+                    break;
+                case 'look around':
+                    printMessage("You see a table with a key on it.");
+                    break;
+                case 'take key':
+                    printMessage("You take the key.");
+                    break;
+                case 'use key':
+                    printMessage("You use the key to unlock the door.");
+                    break;
+                case 'exit':
+                    printMessage("Thanks for playing!");
+                    break;
+                default:
+                    printMessage("Command not recognized. Type 'help' for a list of commands.");
+            }
+        }
+
+        function printMessage(message) {
+            const output = document.createElement('div');
+            output.textContent = message;
+            terminal.appendChild(output);
+        }
+    </script>
+</body>
+</html>
