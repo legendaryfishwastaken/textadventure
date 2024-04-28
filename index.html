@@ -11,22 +11,11 @@
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             overflow: hidden;
-        }
-
-        .terminal {
-            padding: 10px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             text-align: center;
-        }
-
-        .terminal-content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
         }
 
         pre {
@@ -37,22 +26,19 @@
     </style>
 </head>
 <body>
-    <div class="terminal" id="terminal">
-        <div class="terminal-content" id="terminalContent">
-            <pre id="asciiArt">
+    <div id="terminal">
+        <pre id="asciiArt">
   _______ _    _ ______    _____          __  __ ______ 
  |__   __| |  | |  ____|  / ____|   /\   |  \/  |  ____|
     | |  | |__| | |__    | |  __   /  \  | \  / | |__   
     | |  |  __  |  __|   | | |_ | / /\ \ | |\/| |  __|  
     | |  | |  | | |____  | |__| |/ ____ \| |  | | |____ 
     |_|  |_|  |_|______|  \_____/_/    \_\_|  |_|______|
-            </pre>
-            <div id="welcomeText">Press Enter to Start</div>
-        </div>
+        </pre>
+        <div id="welcomeText">Press Enter to Start</div>
     </div>
 
     <script>
-        const terminalContent = document.getElementById('terminalContent');
         const welcomeText = document.getElementById('welcomeText');
         const asciiArt = document.getElementById('asciiArt');
 
@@ -77,17 +63,17 @@
         function processInput(optionIndex) {
             switch (optionIndex) {
                 case 0:
-                    clearText(terminalContent);
+                    clearText(document.getElementById('terminal'));
                     displayOutcome('run away');
                     currentStep++;
                     break;
                 case 1:
-                    clearText(terminalContent);
+                    clearText(document.getElementById('terminal'));
                     displayOutcome('look around');
                     currentStep++;
                     break;
                 case 2:
-                    clearText(terminalContent);
+                    clearText(document.getElementById('terminal'));
                     displayOutcome('close door');
                     currentStep++;
                     break;
@@ -99,7 +85,7 @@
         function printMessage(message) {
             const output = document.createElement('pre');
             output.textContent = message;
-            terminalContent.appendChild(output);
+            document.getElementById('terminal').appendChild(output);
             output.scrollIntoView(false);
         }
 
